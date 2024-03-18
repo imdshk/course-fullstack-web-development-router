@@ -4,8 +4,10 @@ import {
   Routes,
   Route,
   Link,
-  useMatch
+  useMatch,
+  useNavigate
 } from 'react-router-dom'
+import Notification from './components/Notification'
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
@@ -94,6 +96,8 @@ const CreateNew = (props) => {
 }
 
 const App = () => {
+  const navigate = useNavigate()
+
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
@@ -111,11 +115,19 @@ const App = () => {
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState([null], [null])
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    navigate("/")
+    setNotification([
+      `A new anecdote ${anecdote.content} created!`,
+      "good"
+    ])
+    setTimeout(() => {
+      setNotification([null], [null])
+    }, 5000)
   }
 
   const anecdoteById = (id) =>
@@ -150,6 +162,7 @@ const App = () => {
         <Link style={padding} to="/create">create new</Link>
         <Link style={padding} to="/about">about</Link>
       </div>
+      <Notification message={notification} />
       <Routes>       
         <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} />} />
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
