@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   BrowserRouter as Router,
   Routes,
@@ -59,11 +59,7 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
-  // const [content, setContent] = useState('')
-  // const [author, setAuthor] = useState('')
-  // const [info, setInfo] = useState('')
-  
+const CreateNew = (props) => { 
   const content = useField("content")
   const author = useField("author")
   const info = useField("info")
@@ -71,30 +67,41 @@ const CreateNew = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content: content.value,
-      author: author.value,
-      info: info.value,
+      content: content.content.value,
+      author: author.content.value,
+      info: info.content.value,
       votes: 0
     })
+  }
+
+  const handleReset = (e) => {
+    e.preventDefault()
+    content.reset(),
+    author.reset(),
+    info.reset()
   }
 
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form 
+        onSubmit={handleSubmit}
+        onReset={handleReset}
+      >
         <div>
           content
-          <input {...content} />
+          <input {...content.content} />
         </div>
         <div>
           author
-          <input {...author} />
+          <input {...author.content} />
         </div>
         <div>
           url for more info
-          <input {...info} />
+          <input {...info.content} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="reset">reset</button>
       </form>
     </div>
   )
